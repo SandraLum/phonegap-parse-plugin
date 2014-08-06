@@ -25,7 +25,7 @@
               <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
           </receiver>
-          <receiver android:name="$PACKAGE_NAME.GTBroadcastReceiver" android:exported="false">
+          <receiver android:name="org.apache.cordova.core.GTBroadcastReceiver" android:exported="false">
               <intent-filter>
                   <action android:name="$PACKAGE_NAME.RECEIVE" />
               </intent-filter>
