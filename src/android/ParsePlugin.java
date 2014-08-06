@@ -89,7 +89,9 @@ public class ParsePlugin extends CordovaPlugin {
     public static void flushNotificationToClient(){
         Iterator<JSONObject> iNotifications = pendingNotifications.iterator();
         while(iNotifications.hasNext()) {
-            listenerCallbackContext.success(iNotifications.next());
+        	PluginResult result = new PluginResult(PluginResult.Status.OK, iNotifications.next());
+        	result.setKeepCallback(true);
+            listenerCallbackContext.sendPluginResult(result);
             iNotifications.remove();
         }
     }
