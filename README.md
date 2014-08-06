@@ -1,6 +1,10 @@
 Phonegap Parse.com Plugin
 =========================
 
+Update
+-------
+- Included functionality to pass Push Notification message received from native client back to app via listener
+
 Phonegap 3.0.0 plugin for Parse.com push service
 
 Using [Parse.com's](http://parse.com) REST API for push requires the installation id, which isn't available in JS
