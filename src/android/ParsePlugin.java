@@ -26,6 +26,7 @@ public class ParsePlugin extends CordovaPlugin {
     public static final String ACTION_SUBSCRIBE = "subscribe";
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     public static final String ACTION_REGISTER_LISTENER = "registerListener";
+    public static final String ACTION_FLUSH_NOTIFICATIONS = "flushNotifications";
     
     public static List<JSONObject> pendingNotifications = new ArrayList<JSONObject>();
     public static CallbackContext listenerCallbackContext;
@@ -66,6 +67,10 @@ public class ParsePlugin extends CordovaPlugin {
             this.registerListener(callbackContext);
             return true;
         }
+        if (action.equals(ACTION_FLUSH_NOTIFICATIONS)) {
+            ParsePlugin.flushNotificationToClient();
+            return true;
+        }
         return false;
     }
     
@@ -74,9 +79,12 @@ public class ParsePlugin extends CordovaPlugin {
         listenerCallbackContext = callbackContext;
         isListening = true;
         
-        if(autoflush){
-            flushNotificationToClient();
-        }
+    	PluginResult result = new PluginResult(PluginResult.Status.OK, "Registered Listener");
+    	result.setKeepCallback(true);
+    	
+        listenerCallbackContext.sendPluginResult(result);
+        autoflush = true;
+        flushNotificationToClient();
     }
     
     public static void addNotification(String data) throws JSONException{
@@ -92,6 +100,7 @@ public class ParsePlugin extends CordovaPlugin {
         	PluginResult result = new PluginResult(PluginResult.Status.OK, iNotifications.next());
         	result.setKeepCallback(true);       	
             listenerCallbackContext.sendPluginResult(result);
+            
             iNotifications.remove();
         }
     }
@@ -181,5 +190,10 @@ public class ParsePlugin extends CordovaPlugin {
     	super.onDestroy();
     	stopFlush();
     }
-      
+    @Override
+    public void onReset() {
+    	super.onReset();
+    	stopFlush();
+    	//ParsePlugin.flushNotificationToClient();
+    }        
 }
