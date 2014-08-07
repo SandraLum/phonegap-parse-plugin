@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,7 +81,6 @@ public class ParsePlugin extends CordovaPlugin {
     
     public static void addNotification(String data) throws JSONException{
         pendingNotifications.add(new JSONObject(data));
-        
         if(isListening && autoflush){
             flushNotificationToClient();
         }
@@ -90,14 +90,14 @@ public class ParsePlugin extends CordovaPlugin {
         Iterator<JSONObject> iNotifications = pendingNotifications.iterator();
         while(iNotifications.hasNext()) {
         	PluginResult result = new PluginResult(PluginResult.Status.OK, iNotifications.next());
-        	result.setKeepCallback(true);
+        	result.setKeepCallback(true);       	
             listenerCallbackContext.sendPluginResult(result);
             iNotifications.remove();
         }
     }
 
     private void initialize(final CallbackContext callbackContext,
-            final JSONArray args) {
+    	final JSONArray args) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
@@ -168,16 +168,18 @@ public class ParsePlugin extends CordovaPlugin {
         });
     }
     
-    private void removeListener(){
-        isListening = false;
+    public static void startFlush(){
+    	autoflush = true;
     }
-
+   
+    public static void stopFlush(){
+    	autoflush = false;
+    }
+    
+    @Override
     public void onDestroy() {
-        removeListener();
+    	super.onDestroy();
+    	stopFlush();
     }
-    
-    public void onReset() {
-        removeListener();
-    }
-    
+      
 }
