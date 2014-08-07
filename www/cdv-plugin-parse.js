@@ -67,6 +67,15 @@ var parsePlugin = {
             'registerListener',
             []
         );
+    },
+    flushNotifications: function(successCallback, errorCallback) {
+        cordova.exec(
+            successCallback,
+            errorCallback,
+            'ParsePlugin',
+            'flushNotifications',
+            []
+        );
     }
 };
 module.exports = parsePlugin;
